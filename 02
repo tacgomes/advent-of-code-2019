@@ -1,0 +1,47 @@
+#!/usr/bin/env python3
+
+import sys
+
+from itertools import product
+from operator import add, mul
+
+
+def parse_input(filename):
+    return list(map(int, open(filename).read().split(",")))
+
+
+def run_intcode(intcode, noun, verb):
+    intcode = intcode[:]
+    intcode[1] = noun
+    intcode[2] = verb
+
+    for i in range(0, len(intcode), 4):
+        if intcode[i] == 99:
+            return intcode[0]
+        if intcode[i] == 1:
+            op = add
+        elif intcode[i] == 2:
+            op = mul
+        intcode[intcode[i + 3]] = op(
+            intcode[intcode[i + 1]], intcode[intcode[i + 2]]
+        )
+
+    return None
+
+
+def part1(intcode):
+    return run_intcode(intcode, 12, 2)
+
+
+def part2(intcode):
+    for (noun, verb) in product(range(100), range(100)):
+        res = run_intcode(intcode, noun, verb)
+        if res is not None and res == 19690720:
+            return 100 * noun + verb
+
+    return None
+
+
+intcode = parse_input(sys.argv[1])
+print("Part 1:", part1(intcode))
+print("Part 2:", part2(intcode))
