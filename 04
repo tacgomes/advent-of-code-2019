@@ -1,0 +1,40 @@
+#!/usr/bin/env python3
+
+import sys
+import re
+
+
+def test1(numlist):
+    return any(x == y for x, y in zip(numlist, numlist[1:]))
+
+
+def test2(numlist):
+    num = "".join(numlist)
+    return any(
+        len(match.group()) == 2 for match in re.finditer(r'(\d)\1+', num)
+    )
+
+
+def count_valid_passwds(numlist, idx, start, end, test):
+    if idx == len(numlist):
+        num = int("".join(numlist))
+        if num >= start and num < end and test(numlist):
+            return 1
+        return 0
+
+    count = 0
+    prev = numlist[idx - 1] if idx > 0 else numlist[idx]
+
+    for i in range(int(prev), 10):
+        numlist[idx] = str(i)
+        count += count_valid_passwds(numlist, idx + 1, start, end, test)
+
+    return count
+
+
+start = int(sys.argv[1])
+end = int(sys.argv[2])
+numlist = list(str(start))
+
+print("Part1: ", count_valid_passwds(numlist[:], 0, start, end, test1))
+print("Part2: ", count_valid_passwds(numlist[:], 0, start, end, test2))
