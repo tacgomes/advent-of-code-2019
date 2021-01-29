@@ -1,0 +1,84 @@
+#!/usr/bin/env python3
+
+import sys
+
+from enum import IntEnum
+
+class Op(IntEnum):
+    ADD = 1
+    MUL = 2
+    INPUT = 3
+    OUTPUT = 4
+    JUMP_TRUE = 5
+    JUMP_FALSE = 6
+    LESS_THAN = 7
+    EQUALS = 8
+    HALT = 99
+    
+
+def parse_input(filename):
+    return list(map(int, open(filename).read().split(",")))
+
+
+def decode_instruction(instr):
+    ip = int(str(instr)[-2:])
+    modes = str(instr)[:-2]
+    modes = list(map(int, tuple(reversed(modes))))
+    modes.extend([0] * (3 - len(modes)))
+    return ip, modes
+
+
+def read_param(i, mode, intcode):
+    return intcode[intcode[i]] if mode == 0 else intcode[i]
+
+
+def run_intcode(intcode, input_):
+    intcode = intcode[:]
+    output = None
+    ip = 0
+
+    while ip < len(intcode):
+        op, modes = decode_instruction(intcode[ip])
+        if op == Op.ADD:
+            p1 = read_param(ip + 1, modes[0], intcode)
+            p2 = read_param(ip + 2, modes[1], intcode)
+            intcode[intcode[ip + 3]] = p1 + p2
+            ip += 4
+        elif op == Op.MUL:
+            p1 = read_param(ip + 1, modes[0], intcode)
+            p2 = read_param(ip + 2, modes[1], intcode)
+            intcode[intcode[ip + 3]] = p1 * p2
+            ip += 4
+        elif op == Op.INPUT:
+            intcode[intcode[ip + 1]] = input_
+            ip += 2
+        elif op == Op.OUTPUT:
+            output = intcode[intcode[ip + 1]]
+            ip += 2
+        elif op == Op.JUMP_TRUE:
+            p1 = read_param(ip + 1, modes[0], intcode)
+            p2 = read_param(ip + 2, modes[1], intcode)
+            ip = p2 if p1 != 0 else ip + 3
+        elif op == Op.JUMP_FALSE:
+            p1 = read_param(ip + 1, modes[0], intcode)
+            p2 = read_param(ip + 2, modes[1], intcode)
+            ip = p2 if p1 == 0 else ip + 3
+        elif op == Op.LESS_THAN:
+            p1 = read_param(ip + 1, modes[0], intcode)
+            p2 = read_param(ip + 2, modes[1], intcode)
+            intcode[intcode[ip + 3]] = 1 if p1 < p2 else 0
+            ip += 4
+        elif op == Op.EQUALS:
+            p1 = read_param(ip + 1, modes[0], intcode)
+            p2 = read_param(ip + 2, modes[1], intcode)
+            intcode[intcode[ip + 3]] = 1 if p1 == p2 else 0
+            ip += 4
+        elif op == Op.HALT:
+            break
+
+    return output
+
+
+intcode = parse_input(sys.argv[1])
+print("Part 1:", run_intcode(intcode, 1))
+print("Part 2:", run_intcode(intcode, 5))
