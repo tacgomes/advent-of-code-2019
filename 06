@@ -22,6 +22,10 @@ def part1(orbits):
 
 
 def part2(orbits):
+    # Assume that the graph is acyclic and therefore we only need to
+    # calculate the distance until YOU and SAN intersect. Otherwise, we
+    # would have to use a shortest path algorithm such as the Dijkstra's
+    # algorithm.
     obj = orbits["YOU"]
     count = 0
     distances = {}
