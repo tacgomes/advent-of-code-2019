@@ -20,7 +20,6 @@ def decode(image):
         while image[offset + i] == '2':
             offset += LAYER_SIZE
         decoded[i] = image[offset + i]
-
     return decoded
 
 
@@ -33,10 +32,10 @@ def image2string(image):
 
 
 def part1(image):
-    nlayers = len(image) // LAYER_SIZE
-    counters = [Counter() for _ in range(nlayers)]
-    for (index, digit) in enumerate(image):
-        counters[index // LAYER_SIZE][digit] += 1
+    counters = [
+        Counter(image[i:i + LAYER_SIZE])
+        for i in range(0, len(image), LAYER_SIZE)
+    ]
     counter0 = min(counters, key=lambda c: c['0'])
     return counter0['1'] * counter0['2']
 
