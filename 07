@@ -2,90 +2,12 @@
 
 import sys
 
-from enum import IntEnum
 from itertools import permutations
-
-
-class Op(IntEnum):
-    ADD = 1
-    MUL = 2
-    INPUT = 3
-    OUTPUT = 4
-    JUMP_TRUE = 5
-    JUMP_FALSE = 6
-    LESS_THAN = 7
-    EQUALS = 8
-    HALT = 99
+from pyaoc.intcode import IntCodeProgram
 
 
 def parse_input(filename):
     return list(map(int, open(filename).read().split(",")))
-
-
-def decode(instr):
-    return instr % 100, instr // 100 % 10, instr // 1000 % 10
-
-
-class IntCodeProgram:
-    def __init__(self, prog, inputs=[]):
-        self.prog = prog[:]
-        self.ip = 0
-        self.inputs = inputs
-        self.output = None
-
-    def run(self, extra_inputs=[]):
-        self.inputs.extend(extra_inputs)
-
-        while self.ip < len(self.prog):
-            ip = self.ip
-            op, mode1, mode2 = decode(self.prog[ip])
-            if op == Op.ADD:
-                p1 = self.param(ip + 1, mode1)
-                p2 = self.param(ip + 2, mode2)
-                self.prog[self.prog[ip + 3]] = p1 + p2
-                ip += 4
-            elif op == Op.MUL:
-                p1 = self.param(ip + 1, mode1)
-                p2 = self.param(ip + 2, mode2)
-                self.prog[self.prog[ip + 3]] = p1 * p2
-                ip += 4
-            elif op == Op.INPUT:
-                self.prog[self.prog[ip + 1]] = self.inputs.pop(0)
-                ip += 2
-            elif op == Op.OUTPUT:
-                self.output = self.prog[intcode[ip + 1]]
-                self.ip += 2
-                return self.output
-            elif op == Op.JUMP_TRUE:
-                p1 = self.param(ip + 1, mode1)
-                p2 = self.param(ip + 2, mode2)
-                ip = p2 if p1 != 0 else ip + 3
-            elif op == Op.JUMP_FALSE:
-                p1 = self.param(ip + 1, mode1)
-                p2 = self.param(ip + 2, mode2)
-                ip = p2 if p1 == 0 else ip + 3
-            elif op == Op.LESS_THAN:
-                p1 = self.param(ip + 1, mode1)
-                p2 = self.param(ip + 2, mode2)
-                self.prog[self.prog[ip + 3]] = 1 if p1 < p2 else 0
-                ip += 4
-            elif op == Op.EQUALS:
-                p1 = self.param(ip + 1, mode1)
-                p2 = self.param(ip + 2, mode2)
-                self.prog[self.prog[ip + 3]] = 1 if p1 == p2 else 0
-                ip += 4
-            elif op == Op.HALT:
-                break
-            self.ip = ip
-
-        return self.output
-
-    def param(self, idx, mode):
-        return self.prog[self.prog[idx]] if mode == 0 else self.prog[idx]
-
-    def halted(self):
-        op, _, _ = decode(self.prog[self.ip])
-        return op == Op.HALT
 
 
 def part1(intcode):
