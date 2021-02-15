@@ -6,11 +6,10 @@ def draw(points):
 
     m = []
     for _ in range(min_y, max_y + 1):
-        m.append([' ' for _ in range(min_x, max_y + 1)])
+        m.append([' ' for _ in range(min_x, max_x + 1)])
 
     for p, c in points.items():
         x, y = p[0] + min_x * -1, p[1] + min_y * -1
         m[y][x] = c
 
-
-    return '\n'.join(''.join(l) for l in m)
+    return '\n'.join(''.join(r) for r in m)

@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 
-import sys
-
 from enum import IntEnum
-from itertools import permutations
 
 
 class Op(IntEnum):
