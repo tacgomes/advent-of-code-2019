@@ -32,15 +32,20 @@ def decode(instr):
 
 
 class IntCodeProgram:
-    def __init__(self, prog, inputs=[]):
+    def __init__(self, prog, inputs=None, input_func=None):
         self.prog = dict(enumerate(prog))
         self.ip = 0
         self.base = 0
-        self.inputs = inputs
+        if inputs is not None:
+            self.inputs = inputs[:]
+        if input_func:
+            self.input_func = input_func
         self.output = None
+        self.outputs = []
 
-    def run(self, extra_inputs=[]):
-        self.inputs.extend(extra_inputs)
+    def run(self, inputs=None, pause_on_output=True, pause_on_input=False):
+        if inputs is not None:
+            self.inputs.extend(inputs)
 
         while True:
             ip = self.ip
@@ -51,34 +56,39 @@ class IntCodeProgram:
 
             if op == Op.ADD:
                 self[p3] = self[p1] + self[p2]
-                ip += 4
+                self.ip += 4
             elif op == Op.MUL:
                 self[p3] = self[p1] * self[p2]
-                ip += 4
+                self.ip += 4
             elif op == Op.INPUT:
-                self[p1] = self.inputs.pop(0)
-                ip += 2
+                self[p1] = (
+                    self.input_func()
+                    if self.input_func is not None
+                    else self.inputs.pop(0)
+                )
+                self.ip += 2
+                if pause_on_input:
+                    return None
             elif op == Op.OUTPUT:
                 self.output = self[p1]
                 self.ip += 2
-                return self.output
+                if pause_on_output:
+                    return self.output
             elif op == Op.JUMP_TRUE:
-                ip = self[p2] if self[p1] != 0 else ip + 3
+                self.ip = self[p2] if self[p1] != 0 else ip + 3
             elif op == Op.JUMP_FALSE:
-                ip = self[p2] if self[p1] == 0 else ip + 3
+                self.ip = self[p2] if self[p1] == 0 else ip + 3
             elif op == Op.LESS_THAN:
                 self[p3] = 1 if self[p1] < self[p2] else 0
-                ip += 4
+                self.ip += 4
             elif op == Op.EQUALS:
                 self[p3] = 1 if self[p1] == self[p2] else 0
-                ip += 4
+                self.ip += 4
             elif op == Op.RELATIVE_BASE:
                 self.base += self[p1]
-                ip += 2
+                self.ip += 2
             elif op == Op.HALT:
                 break
-
-            self.ip = ip
 
         return self.output
 
