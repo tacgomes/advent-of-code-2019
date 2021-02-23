@@ -28,7 +28,7 @@ def solve(intcode):
         progs.append(prog)
 
     while True:
-        iddle = all(len(rcvq) == 0 for rcvq in rcvqs)
+        idle = all(len(rcvq) == 0 for rcvq in rcvqs)
 
         for src_addr, prog in enumerate(progs):
             dst_addr = prog.run(pause_on_input=True)
@@ -41,8 +41,8 @@ def solve(intcode):
 
             if dst_addr == 255:
                 first_nat_y = y if first_nat_y is None else first_nat_y
-                still_iddle = all(len(rcvq) == 0 for rcvq in rcvqs)
-                if iddle and still_iddle:
+                still_idle = all(len(rcvq) == 0 for rcvq in rcvqs)
+                if idle and still_idle:
                     if last_nat_y == y:
                         return first_nat_y, y
                     rcvqs[0].extend([x, y])
