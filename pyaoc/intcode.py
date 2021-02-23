@@ -36,10 +36,8 @@ class IntCodeProgram:
         self.prog = dict(enumerate(prog))
         self.ip = 0
         self.base = 0
-        if inputs is not None:
-            self.inputs = inputs[:]
-        if input_func:
-            self.input_func = input_func
+        self.inputs = inputs[:] if inputs is not None else []
+        self.input_func = input_func
         self.output = None
         self.outputs = []
 
