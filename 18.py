@@ -27,7 +27,8 @@ def find_reachable_keys(maze, positions, keys_to_collect):
             if symb.islower() and symb in keys_to_collect:
                 reachable_keys[symb] = (steps, robot, pos)
                 continue
-            elif symb.isupper() and symb.lower() in keys_to_collect:
+
+            if symb.isupper() and symb.lower() in keys_to_collect:
                 continue
 
             for m in MOVES:

@@ -2,8 +2,6 @@
 
 import sys
 
-from itertools import product
-from operator import add, mul
 
 deltas = {
     "U": (0, 1),

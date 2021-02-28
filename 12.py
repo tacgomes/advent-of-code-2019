@@ -30,7 +30,7 @@ def apply_gravity(positions, velocities):
 
 
 def apply_velocity(positions, velocities):
-    for i in range(len(positions)):
+    for i, _ in enumerate(positions):
         positions[i][0] += velocities[i][0]
         positions[i][1] += velocities[i][1]
         positions[i][2] += velocities[i][2]

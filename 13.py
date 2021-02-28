@@ -3,7 +3,6 @@
 import sys
 
 from enum import IntEnum
-from itertools import product
 from pyaoc.intcode import IntCodeProgram
 
 

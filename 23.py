@@ -10,7 +10,7 @@ def parse_intput(filename):
     return list(map(int, open(filename).read().split(',')))
 
 
-def input_func_wrapper(addr, rcvq):
+def input_func_wrapper(rcvq):
     return lambda: rcvq.popleft() if rcvq else -1
 
 
@@ -22,7 +22,7 @@ def solve(intcode):
         rcvq = deque([addr])
         prog = IntCodeProgram(
             intcode,
-            input_func=input_func_wrapper(addr, rcvq)
+            input_func=input_func_wrapper(rcvq)
         )
         rcvqs.append(rcvq)
         progs.append(prog)
@@ -30,14 +30,14 @@ def solve(intcode):
     while True:
         idle = all(len(rcvq) == 0 for rcvq in rcvqs)
 
-        for src_addr, prog in enumerate(progs):
+        for prog in progs:
             dst_addr = prog.run(pause_on_input=True)
             if dst_addr is None:
                 continue
 
             x, y = prog.run(), prog.run()
-            assert (x is not None)
-            assert (y is not None)
+            assert x is not None
+            assert y is not None
 
             if dst_addr == 255:
                 first_nat_y = y if first_nat_y is None else first_nat_y

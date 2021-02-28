@@ -17,7 +17,7 @@ def flatten(lst):
 def part1(signal, num_phases=100):
     for _ in range(num_phases):
         new_signal = []
-        for i, n in enumerate(signal):
+        for i, _ in enumerate(signal):
             pattern = flatten(map(lambda x: [x] * (i + 1), PATTERN))
             total = sum(
                 m * pattern[(j + 1) % len(pattern)]
@@ -31,7 +31,7 @@ def part1(signal, num_phases=100):
 
 def part2(signal):
     skip = int(''.join(map(str, signal[:7])))
-    assert(skip >= len(signal) * 10_000 // 2)
+    assert skip >= len(signal) * 10_000 // 2
 
     signal = signal * 10_000
     signal = signal[skip:]

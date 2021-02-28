@@ -52,7 +52,7 @@ def part1(reactions, fuel_amount=1):
     return counter['ORE']
 
 
-def part2(reactions, min_ore=0):
+def part2(reactions):
     max_ore = 10**12
 
     upper_bound = 2

@@ -2,7 +2,6 @@
 
 import sys
 
-from itertools import product
 from pyaoc.intcode import IntCodeProgram
 
 

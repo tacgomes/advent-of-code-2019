@@ -35,12 +35,12 @@ def get_moves(nrows, ncols):
     # atan2.
     moves = list(product(range(1, nrows), range(1, ncols)))
     moves.extend([(1, 0), (0, 1)])
-    moves = dict([(slope(y, x), (y, x)) for y, x in moves[::-1]])
+    moves = {slope(y, x): (y, x) for y, x in moves[::-1]}
     moves = moves.values()
     moves = sorted(moves, key=lambda p: slope(p[0], p[1]))[::-1]
     moves = (
         [(-y, x) for y, x in moves]
-        + [(y, x) for y, x in moves][::-1]
+        + moves[::-1]
         + [(y, -x) for y, x in moves]
         + [(-y, -x) for y, x in moves][::-1]
     )

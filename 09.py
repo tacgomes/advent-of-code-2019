@@ -2,8 +2,8 @@
 
 import sys
 
-from itertools import product
 from pyaoc.intcode import IntCodeProgram
+
 
 def parse_intput(filename):
     return list(map(int, open(filename).read().split(",")))
